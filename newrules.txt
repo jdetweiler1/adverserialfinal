@@ -1,0 +1,41 @@
+<group name="police_hospital,">
+
+  <!-- Police Department SSH sign-in activity -->
+  <rule id="110201" level="7">
+    <program_name type="pcre2">^sshd$</program_name>
+    <match type="pcre2">(?i)(Accepted (password|publickey)|Failed password|Invalid user)</match>
+    <description>twinpeaks-pd recorded an SSH sign-in attempt</description>
+    <group>police_ssh,</group>
+  </rule>
+
+  <!-- Police Department sudo use -->
+  <rule id="110203" level="7">
+    <program_name type="pcre2">^sudo$</program_name>
+    <match>COMMAND=</match>
+    <description>twinpeaks-pd recorded a sudo command</description>
+    <group>police_sudo,</group>
+  </rule>
+
+  <!-- Police Department web command endpoint -->
+  <rule id="110204" level="9">
+    <match type="pcre2">(?i)/assets/records\.php</match>
+    <description>twinpeaks-pd received a request to the records page</description>
+    <group>police_web,</group>
+  </rule>
+
+  <!-- Hospital domain account password reset -->
+  <rule id="110205" level="9">
+    <field name="win.system.eventID" type="pcre2">^4724$</field>
+    <description>hospital-dc recorded an account password reset attempt</description>
+    <group>hospital_account,</group>
+  </rule>
+
+  <!-- Hospital scheduled task persistence -->
+  <rule id="110211" level="8">
+    <field name="win.system.channel" type="pcre2">^Microsoft-Windows-TaskScheduler/Operational$</field>
+    <field name="win.system.eventID" type="pcre2">^(106|140)$</field>
+    <description>hospital-dc registered or updated a scheduled task</description>
+    <group>hospital_task,</group>
+  </rule>
+
+</group>
